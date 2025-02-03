@@ -9,6 +9,8 @@ import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import javax.swing.Timer;
+import music.I;
+import music.UC;
 
 public class Squares extends WinApp implements ActionListener {
 
@@ -48,59 +50,91 @@ public class Squares extends WinApp implements ActionListener {
     }
   }
 
+  public static I.Area curArea;
   @Override
   public void mousePressed(MouseEvent me) {
     int x = me.getX(), y = me.getY();
-    if (theVS.hit(x, y)) {
-      color = G.rndColor();
-    }
-    lastSquare = squares.hit(x, y);
-    if (lastSquare == null) {
-      dragging = false;
-      lastSquare = new Square(x, y);
-      squares.add(lastSquare);
-    } else {
-      dragging = true;
-      mouseDelta.set(x - lastSquare.loc.x, y - lastSquare.loc.y);
-      lastSquare.dv.set(0, 0);
-      pressedLoc.set(x, y);
-    }
-//
+    curArea = squares.hit(x, y);
+    curArea.dn(x, y);
     repaint();
   }
-
   @Override
   public void mouseDragged(MouseEvent me) {
-    int x = me.getX(), y = me.getY();
-    if (dragging) {
-      lastSquare.moveTo(x - mouseDelta.x, y - mouseDelta.y);
-    } else {
-      lastSquare.resize(x, y);
-    }
+    curArea.drag(me.getX(), me.getY());
     repaint();
   }
+  @Override
+  public void mouseReleased(MouseEvent me) {
+    curArea.up(me.getX(), me.getY());
+    repaint();
+  }
+//  @Override
+//  public void mousePressed(MouseEvent me) {
+//    int x = me.getX(), y = me.getY();
+//    if (theVS.hit(x, y)) {
+//      color = G.rndColor();
+//    }
+//    lastSquare = squares.hit(x, y);
+//    if (lastSquare == null) {
+//      dragging = false;
+//      lastSquare = new Square(x, y);
+//      squares.add(lastSquare);
+//    } else {
+//      dragging = true;
+//      mouseDelta.set(lastSquare.loc.x - x, lastSquare.loc.y - y);
+//      lastSquare.dv.set(0, 0);
+//      pressedLoc.set(x, y);
+//    }
+//    repaint();
+//  }
+
+//  @Override
+//  public void mouseDragged(MouseEvent me) {
+//    int x = me.getX(), y = me.getY();
+//    if (dragging) {
+//      lastSquare.moveTo(x + mouseDelta.x, y + mouseDelta.y);
+//    } else {
+//      lastSquare.resize(x, y);
+//    }
+//    repaint();
+//  }
 
   @Override
   public void actionPerformed(ActionEvent e) {
     repaint();
   }
 
-  @Override
-  public void mouseReleased(MouseEvent me) {
-    if (dragging) {
-      lastSquare.dv.set(me.getX() - pressedLoc.x, me.getY() - pressedLoc.y);
-    }
-  }
+//  @Override
+//  public void mouseReleased(MouseEvent me) {
+//    if (dragging) {
+//      lastSquare.dv.set(me.getX() - pressedLoc.x, me.getY() - pressedLoc.y);
+//    }
+//  }
 
   //-----------------Square------------------------------
-  public static class Square extends G.VS {
+  public static class Square extends G.VS implements I.Area {
 
+    public static Square BACKGROUND = new Square(){
+      // anonymous class: works only for this instance
+      public void dn(int x, int y) {
+        lastSquare = new Square(x, y);
+        squares.add(lastSquare);
+      }
+      public void drag(int x, int y) { lastSquare.resize(x, y); }
+    };
     public Color c = G.rndColor();
-    public G.V dv = new G.V(G.rnd(20) - 10,
-        G.rnd(20) - 10); // random velocity between -10 and 10 in both x and y
+//    public G.V dv = new G.V(G.rnd(20) - 10,
+//        G.rnd(20) - 10); // random velocity between -10 and 10 in both x and y
+    public G.V dv = new G.V(0, 0);
 
     public Square(int x, int y) {
       super(x, y, 100, 100);
+    }
+
+    // overloading
+    public Square() {
+      super(0, 0, UC.largestPossibleCoordinate, UC.largestPossibleCoordinate);
+      c = Color.WHITE;
     }
 
     public void draw(Graphics g) {
@@ -135,9 +169,22 @@ public class Squares extends WinApp implements ActionListener {
       }
     }
 
+    @Override
+    public void dn(int x, int y) { mouseDelta.set(loc.x - x, loc.y - y); }
+
+    @Override
+    public void up(int x, int y) {}
+
+    @Override
+    public void drag(int x, int y) { loc.set(mouseDelta.x + x, mouseDelta.y + y); }
+
     //------------------List----------------------------
     public static class List extends ArrayList<Square> {
 
+      public List() {
+        super();
+        this.add(Square.BACKGROUND);
+      }
       public void draw(Graphics g) {
         for (Square s : this) {
           s.draw(g);
@@ -148,14 +195,15 @@ public class Squares extends WinApp implements ActionListener {
         add(new Square(x, y));
       }
 
-      public Square hit(int x, int y) { // can return null
-        for (int i = this.size() - 1; i >= 0; --i) {
+      public Square hit(int x, int y) {
+        Square res = null;
+        for (int i = 0; i < this.size(); i++) {
           Square s = this.get(i);
           if (s.hit(x, y)) {
-            return s;
+            res = s;
           }
         }
-        return null;
+        return res;
       }
     }
 
