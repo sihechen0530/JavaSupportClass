@@ -67,10 +67,34 @@ public class G {
   }
 
   // ---------- LoHi ----------
-  public static class LoHi { }
+  public static class LoHi {
+    public int lo, hi;
+    public LoHi(int min, int max) { lo = min; hi = max; }
+    public void set(int val) { lo = val; hi = val; }
+    public void add(int val) {
+      if (val < lo ) {
+        lo = val;
+      }
+      if (val > hi) {
+        hi = val;
+      }
+    }
+    public int size() {
+      // conditional expression
+      return Math.max(hi - lo, 0);
+    }
+  }
 
   // ---------- BBox ----------
-  public static class BBox { }
+  public static class BBox {
+    public LoHi h, v;
+    public BBox() {h = new LoHi(0, 0); v = new LoHi(0, 0);}
+    public void set(int x, int y) {h.set(x); v.set(y);}
+    public void add(int x, int y) {h.add(x); v.add(y);}
+    public void add(V vec) {h.add(vec.x); v.add(vec.y);}
+    public VS getNewVS() {return new VS(h.lo, v.lo, h.hi - h.lo, v.hi - v.lo);}
+    public void draw(Graphics g) {g.drawRect(h.lo, v.lo, h.hi - h.lo, v.hi - v.lo);}
+  }
 
   // ---------- PL ----------
   public static class PL {
@@ -80,10 +104,17 @@ public class G {
       for (int i = 0; i < count; i++) { points[i] = new V(0, 0); }
     }
     public int size() { return points.length; }
+    public void drawNDots(Graphics g, int n) {
+      g.setColor(Color.BLUE);
+      for (int i = 0; i < n; i++) {
+        g.drawOval(points[i].x - 2, points[i].y - 2, 4, 4);
+      }
+    }
     public void drawN(Graphics g, int n) {
       for (int i = 1; i < n; i++) {
         g.drawLine(points[i - 1].x, points[i - 1].y, points[i].x, points[i].y);
       }
+      drawNDots(g, n);
     }
     public void draw(Graphics g) {
       drawN(g, points.length);

@@ -9,4 +9,5 @@ public class UC {
   public static final int largestPossibleCoordinate = 5000;
   public static final int inkBufferMax = 500;
   public static final Color inkColor = Color.CYAN;
+  public static final int normSampleSize = 25;
 }
