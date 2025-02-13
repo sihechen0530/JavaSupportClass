@@ -2,6 +2,7 @@ package graphics;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.io.Serializable;
 import java.util.Random;
 
 public class G {
@@ -36,7 +37,7 @@ public class G {
   }
 
   // ---------- V ----------
-  public static class V {
+  public static class V implements Serializable {
 
     public static Transform T = new Transform();
     public int x, y;
@@ -106,7 +107,7 @@ public class G {
   }
 
   // ---------- VS ----------
-  public static class VS {
+  public static class VS implements Serializable {
 
     public V loc, size;
 
@@ -214,7 +215,7 @@ public class G {
   }
 
   // ---------- PL ----------
-  public static class PL {
+  public static class PL implements Serializable {
 
     public V[] points;
 

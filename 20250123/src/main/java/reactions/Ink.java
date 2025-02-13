@@ -3,11 +3,12 @@ package reactions;
 import graphics.G;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.io.Serializable;
 import java.util.ArrayList;
 import music.I;
 import music.UC;
 
-public class Ink implements I.Show {
+public class Ink implements I.Show, Serializable {
 
   public static final Buffer BUFFER = new Buffer();
 
@@ -37,7 +38,7 @@ public class Ink implements I.Show {
     norm.drawAt(g, vs);
   }
 
-  public static class Norm extends G.PL {
+  public static class Norm extends G.PL implements Serializable {
     public static final int N = UC.normSampleSize, MAX = UC.normCoorMax;
     public static final G.VS NCS = new G.VS(0, 0, MAX, MAX);  // normalized coordinate system
     public Norm() {
