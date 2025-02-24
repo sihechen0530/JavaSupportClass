@@ -118,7 +118,7 @@ public class Ink implements I.Show, Serializable {
 
     public void show(Graphics g) {
       drawN(g, n);
-      bBox.draw(g);
+//      bBox.draw(g);
     }
 
     public void subSample(G.PL pl) {

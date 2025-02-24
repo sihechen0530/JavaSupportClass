@@ -34,6 +34,12 @@ public abstract class Reaction implements I.React {
     return byShape.getList(g.shape).loBid(g);
   }
 
+  public static void nuke() {
+    // used to reset for undo
+    byShape = new Map();
+    initialReactions.enable();
+  }
+
   // -------------- List ----------------
   public static class List extends ArrayList<Reaction> {
     public void addReaction(Reaction r) {
@@ -44,6 +50,7 @@ public abstract class Reaction implements I.React {
       remove(r);
       r.disable();
     }
+    public void enable() { for (Reaction r : this) { r.enable(); }}
     public void clearAll() {
       for (Reaction r : this) {
         r.disable();
