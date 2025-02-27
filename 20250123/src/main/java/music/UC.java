@@ -14,6 +14,8 @@ public class UC {
 
   public static final int normCoorMax = 1000;
   public static final int dotThreshold = 5;
+  public static final int minStaffGap = 40;
   public static String shapeDatabaseFileName = "shapeDB.dat";
   public static final int noBid = 10000;
+  public static final int minSysGap = 50;
 }

@@ -176,7 +176,7 @@ public class G {
 
     public int size() {
       // conditional expression
-      return Math.max(hi - lo, 0);
+      return Math.max(hi - lo, 1);
     }
   }
 
@@ -253,6 +253,18 @@ public class G {
         point.setT(point);
       }
     }
+  }
+
+  // ------------- Hierarchical Coordinates ------------------------
+  public static class HC {
+    public static HC ZERO = new HC(null, 0);
+    public HC dad;
+    public int dv;
+    public HC(HC dad, int dv) {
+      this.dad = dad;
+      this.dv = dv;
+    }
+    public int v() { return dad == ZERO ? dv : dad.v() + dv; }
   }
 
 }
