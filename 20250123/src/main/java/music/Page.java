@@ -12,6 +12,7 @@ public class Page extends Mass {
   public int sysGap;
   public G.HC pageTop;
   public Sys.List sysList;
+  public int maxH = 0;
 
   public Page(int y) {
     super("BACK");
@@ -20,6 +21,7 @@ public class Page extends Mass {
     G.HC sysTop = new G.HC(pageTop, 0);
     sysList = new Sys.List();
     sysList.add(new Sys(this, sysTop));
+    updateMaxH();
 
     addReaction(new Reaction("W-W") {
       // add newStaff to first system
@@ -36,7 +38,7 @@ public class Page extends Mass {
         return 1000;
       }
       public void act(Gesture g) {
-        sysList.get(0).addNewStaff(y);
+        sysList.get(0).addNewStaff(g.vs.yM());
       }
     });
     addReaction(new Reaction("W-E") {
@@ -49,9 +51,16 @@ public class Page extends Mass {
         return 1000;
       }
       public void act(Gesture g) {
-        addNewSys(y);
+        addNewSys(g.vs.yM());
       }
     });
+  }
+
+  public void updateMaxH() {
+    Sys sys = sysList.get(0);
+    int newH = sys.staffs.get(sys.staffs.size() - 1).fmt.H;
+    if (maxH < newH) { maxH = newH; }
+    // maxH = max(maxH, newH);
   }
 
   public void addNewSys(int y) {
@@ -61,7 +70,7 @@ public class Page extends Mass {
       sysGap = y - sysHeight - pageTop.v();
     }
     G.HC sysTop = new G.HC(pageTop, nSys * (sysHeight + sysGap));
-    // sysList.add(new Sys(this, sysTop));
+    sysList.add(new Sys(this, sysTop));
   }
 
   public void show(Graphics g) {

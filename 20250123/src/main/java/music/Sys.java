@@ -17,7 +17,7 @@ public class Sys extends Mass {
     staffs = new Staff.List(sysTop);
     if (iSys == 0) {
       // first system being created, create the first staff
-      staffs.add(new Staff(this, 0, new G.HC(sysTop, 0)));
+      staffs.add(new Staff(this, 0, new G.HC(sysTop, 0), new Staff.Fmt(5, 8)));
     } else {
       // other systems are clones of the first system
       Sys oldSys = page.sysList.get(0);
@@ -40,7 +40,8 @@ public class Sys extends Mass {
   public void addNewStaff(int y) {
     int off = y - staffs.sysTop.v();
     G.HC staffTop = new G.HC(staffs.sysTop, off);
-    staffs.add(new Staff(this, staffs.size(), staffTop));
+    staffs.add(new Staff(this, staffs.size(), staffTop, new Staff.Fmt(5, 8)));
+    page.updateMaxH();
   }
 
   public static class List extends ArrayList<Sys> {

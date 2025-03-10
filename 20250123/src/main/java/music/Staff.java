@@ -3,19 +3,60 @@ package music;
 import java.awt.Graphics;
 import graphics.G;
 import java.util.ArrayList;
+import reactions.Gesture;
 import reactions.Mass;
+import reactions.Reaction;
 
 public class Staff extends Mass {
   public Sys sys;
   public int iStaff;  // index of where it lives in the dad's list
   public G.HC staffTop;
-  public Fmt fmt = new Fmt(5, 8);
+  public Fmt fmt;
 
-  public Staff(Sys sys, int iStaff, G.HC staffTop) {
+  public Staff(Sys sys, int iStaff, G.HC staffTop, Staff.Fmt fmt) {
     super("BACK");
     this.sys = sys;
     this.iStaff = iStaff;
     this.staffTop = staffTop;
+    this.fmt = fmt;
+
+    addReaction(new Reaction("S-S") {
+      @Override
+      public int bid(Gesture g) {
+        Page PAGE = sys.page;
+        int x = g.vs.xM(), y1 = g.vs.yL(), y2 = g.vs.yH();
+        int left = PAGE.margins.left, right = PAGE.margins.right;
+        if (x < left || x > (right + UC.barToMarginSnap)) { return UC.noBid; }
+//        if (x < PAGE.margins.left || x > PAGE.margins.right) { return UC.noBid; }
+        int d = Math.abs(y1 - yTop()) + Math.abs(y2 - yBot());  // measure
+        int bias = UC.barToMarginSnap;  // maximum cycle bar bid must outbid create bar
+        return d < 30 ? d + bias : UC.noBid;
+      }
+
+      @Override
+      public void act(Gesture g) {
+        new Bar(Staff.this.sys, g.vs.xM());
+      }
+    });
+
+    addReaction(new Reaction("S-S") {
+      // toggle barContinues
+      @Override
+      public int bid(Gesture g) {
+        if (Staff.this.sys.iSys != 0) { return UC.noBid; }
+        int y1 = g.vs.yL(), y2 = g.vs.yH();
+        if (iStaff == sys.staffs.size() - 1) { return UC.noBid; } // last staff, cannot set
+        if (Math.abs(y1 - yBot()) > 20) { return UC.noBid; }  // close to bottom
+        Staff nextStaff = sys.staffs.get(iStaff + 1);
+        if (Math.abs(y2 - nextStaff.yTop()) > 20) { return UC.noBid; }  // too far from next top
+        return 10;  // low value
+      }
+
+      @Override
+      public void act(Gesture g) {
+        fmt.toggleBarContinues();
+      }
+    });
   }
 
   public int yTop() { return staffTop.v(); }
@@ -25,7 +66,7 @@ public class Staff extends Mass {
 
   public Staff copy(Sys newSys) {
     G.HC hc = new G.HC(newSys.staffs.sysTop, staffTop.dv);
-    return new Staff(newSys, iStaff, hc);
+    return new Staff(newSys, iStaff, hc, fmt);
   }
 
   public void show(Graphics g) {
@@ -40,10 +81,12 @@ public class Staff extends Mass {
   // ------------- Format -----------------
   public static class Fmt {
     public int nLines, H;
+    public boolean barContinues = false;
     public Fmt(int nLines, int H) {
       this.nLines = nLines;
       this.H = H;
     }
+    public void toggleBarContinues() { barContinues = !barContinues; }
   }
 
   // -------------- Staff.List --------------

@@ -6,6 +6,7 @@ import music.I;
 public abstract class Mass extends Reaction.List implements I.Show {
   public Layer layer;
   public Mass(String layerName) {
+    // race condition
     layer = Layer.byName.get(layerName);
     if (layer != null) {
       layer.add(this);

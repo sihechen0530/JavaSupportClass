@@ -18,4 +18,5 @@ public class UC {
   public static String shapeDatabaseFileName = "shapeDB.dat";
   public static final int noBid = 10000;
   public static final int minSysGap = 50;
+  public static final int barToMarginSnap = 20;
 }

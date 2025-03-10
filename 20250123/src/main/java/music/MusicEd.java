@@ -27,7 +27,7 @@ public class MusicEd extends WinApp {
       public void act(Gesture g) {
         int y = g.vs.yM();
         PAGE = new Page(y);
-        // disable(); ???
+        disable();
       }
     });
   }
