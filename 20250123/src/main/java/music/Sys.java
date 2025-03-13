@@ -9,12 +9,14 @@ public class Sys extends Mass {
   public Page page;
   public int iSys;
   public Staff.List staffs;
+  public Time.List times;
 
   public Sys(Page page, G.HC sysTop) {
     super("BACK");
     this.page = page;
     iSys = page.sysList.size();
     staffs = new Staff.List(sysTop);
+    times = new Time.List(this);
     if (iSys == 0) {
       // first system being created, create the first staff
       staffs.add(new Staff(this, 0, new G.HC(sysTop, 0), new Staff.Fmt(5, 8)));
@@ -28,6 +30,7 @@ public class Sys extends Mass {
     }
   }
 
+  public Time getTime(int x) { return times.getTime(x); }
   public int yTop() { return staffs.sysTop.v(); }
   public int yBot() { return staffs.get(staffs.size() - 1).yBot(); }
   public int height() { return yBot() - yTop(); }

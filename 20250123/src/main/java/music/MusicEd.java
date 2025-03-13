@@ -13,7 +13,11 @@ import reactions.Reaction;
 import reactions.Shape;
 
 public class MusicEd extends WinApp {
-  public Layer BACK = new Layer("BACK"), FORE = new Layer("FORE");
+  static {
+    new Layer("BACK");
+    new Layer("NOTE");
+    new Layer("FORE");
+  }  // static block run at initialization
   public static boolean training = false;
   public static I.Area curArea = Gesture.AREA;  // switch between training and gesture at any time
   public static Page PAGE;  // single constant
@@ -39,6 +43,10 @@ public class MusicEd extends WinApp {
     g.setColor(Color.BLACK);
     Ink.BUFFER.show(g);
     g.drawString(Gesture.recognized, 900, 30);
+    if (PAGE != null) {
+      Glyph.CLEF_G.showAt(g, 8, 100, PAGE.margins.top + 4 * 8);  // which char in font, scale, x, y
+//      Glyph.HEAD_W.showAt(g, 8, 200, PAGE.margins.top + 4 * 8);
+    }
   }
 
   public void mousePressed(MouseEvent me) { curArea.dn(me.getX(), me.getY()); repaint(); }

@@ -57,12 +57,72 @@ public class Staff extends Mass {
         fmt.toggleBarContinues();
       }
     });
+
+    addReaction(new Reaction("SW-SW") {  // add note to staff
+      @Override
+      public int bid(Gesture g) {
+        int x = g.vs.xM(), y = g.vs.yM();
+        if (x < sys.page.margins.left || x > sys.page.margins.right) { return UC.noBid; }
+        int H = fmt.H, top = yTop() - H, bot = yBot() + H;
+        if (y < top || y > bot) { return UC.noBid; }
+        return 10;
+      }
+
+      @Override
+      public void act(Gesture g) {
+        new Head(Staff.this, g.vs.xM(), g.vs.yM());
+      }
+    });
+
+    addReaction(new Reaction("W-S") {
+      // add q rest
+      @Override
+      public int bid(Gesture g) {
+        int x = g.vs.xL(), y = g.vs.yM();
+        if (x < sys.page.margins.left || x > sys.page.margins.right) { return UC.noBid; }
+        int H = fmt.H, top = yTop() - H, bot = yBot() + H;
+        if (y < top || y > bot) { return UC.noBid; }
+        return 10;
+      }
+
+      @Override
+      public void act(Gesture g) {
+        Time t = Staff.this.sys.getTime(g.vs.xL());
+        new Rest(Staff.this, t);
+      }
+    });
+
+    addReaction(new Reaction("E-S") {  // E for eighth rest
+      // add q rest
+      @Override
+      public int bid(Gesture g) {
+        int x = g.vs.xL(), y = g.vs.yM();
+        if (x < sys.page.margins.left || x > sys.page.margins.right) { return UC.noBid; }
+        int H = fmt.H, top = yTop() - H, bot = yBot() + H;
+        if (y < top || y > bot) { return UC.noBid; }
+        return 10;
+      }
+
+      @Override
+      public void act(Gesture g) {
+        Time t = Staff.this.sys.getTime(g.vs.xL());
+        (new Rest(Staff.this, t)).nFlag = 1;
+      }
+    });
   }
 
   public int yTop() { return staffTop.v(); }
   // which line that put note; H is half space between lines
   public int yOfLine(int line) { return yTop() + line * fmt.H; }
   public int yBot() { return yOfLine(2 * (fmt.nLines - 1)); }
+
+  public int yLine(int n) { return yTop() + n * fmt.H; }
+  public int lineOfY(int y) {
+    int H = fmt.H;
+    int bias = 100;  // because integer truncation rounds toward 0; for negative numbers;
+    int top = yTop() - H * bias;
+    return (y - top + H / 2) / H - bias;
+  }
 
   public Staff copy(Sys newSys) {
     G.HC hc = new G.HC(newSys.staffs.sysTop, staffTop.dv);

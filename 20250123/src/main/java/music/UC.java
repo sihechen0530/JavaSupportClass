@@ -19,4 +19,8 @@ public class UC {
   public static final int noBid = 10000;
   public static final int minSysGap = 50;
   public static final int barToMarginSnap = 20;
+  public static final String FontName = "sinfonia";
+  public static final int snapTime = 30;
+  public static final int augDotSpacing = 7;
+  public static final int augDotOffset = 27;
 }
