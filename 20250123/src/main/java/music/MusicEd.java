@@ -46,6 +46,11 @@ public class MusicEd extends WinApp {
     if (PAGE != null) {
       Glyph.CLEF_G.showAt(g, 8, 100, PAGE.margins.top + 4 * 8);  // which char in font, scale, x, y
 //      Glyph.HEAD_W.showAt(g, 8, 200, PAGE.margins.top + 4 * 8);
+      // draw boxes to get font size
+//      int H = 32;
+//      Glyph.HEAD_Q.showAt(g, H, 200, PAGE.margins.top + 4 * H);
+//      g.setColor(Color.RED);
+//      g.drawRect(200, PAGE.margins.top + 3 * H, 24 * H / 10, 24 * H / 10);
     }
   }
 

@@ -56,11 +56,11 @@ public class Glyph{
       theSize = size;
     }
     Font f = g.getFont(); // fetch old font so that we can restore it
-    g.setColor(Color.BLACK);
+//    g.setColor(Color.BLACK);
     g.setFont(theFont);
     g.drawString(""+code, x + (int)Math.floor(dx*H), y + (int)Math.floor(dy*H));
-    g.setColor(Color.RED);
-    g.drawRect(x, y, H, H);
+//    g.setColor(Color.RED);
+//    g.drawRect(x, y, H, H);
     g.setFont(f); // restore old font
   }
 }
