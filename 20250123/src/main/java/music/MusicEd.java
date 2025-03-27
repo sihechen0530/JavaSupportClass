@@ -44,7 +44,7 @@ public class MusicEd extends WinApp {
     Ink.BUFFER.show(g);
     g.drawString(Gesture.recognized, 900, 30);
     if (PAGE != null) {
-      Glyph.CLEF_G.showAt(g, 8, 100, PAGE.margins.top + 4 * 8);  // which char in font, scale, x, y
+//      Glyph.CLEF_G.showAt(g, 8, 100, PAGE.margins.top + 4 * 8);  // which char in font, scale, x, y
 //      Glyph.HEAD_W.showAt(g, 8, 200, PAGE.margins.top + 4 * 8);
       // draw boxes to get font size
 //      int H = 32;
@@ -52,6 +52,14 @@ public class MusicEd extends WinApp {
 //      g.setColor(Color.RED);
 //      g.drawRect(200, PAGE.margins.top + 3 * H, 24 * H / 10, 24 * H / 10);
     }
+
+    // test beam stack
+//    int H = 8, x1 = 100, x2 = 200;
+//    Beam.setMasterBeam(x1, 100 + G.rnd(100), x2, 100 + G.rnd(100));
+//    g.drawLine(0, Beam.my1, x1, Beam.my1);
+//    Beam.drawBeamStack(g, 0, 1, x1, x2, H);
+//    g.setColor(Color.ORANGE);
+//    Beam.drawBeamStack(g, 1, 3, x1 + 10, x2 - 10, H);
   }
 
   public void mousePressed(MouseEvent me) { curArea.dn(me.getX(), me.getY()); repaint(); }

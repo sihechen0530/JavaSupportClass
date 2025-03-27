@@ -20,19 +20,20 @@ public class Time {
     }
   }
 
-  public void stemHeads(Staff staff, boolean up, int y1, int y2) {
-    Stem s = new Stem(staff, up);
-    for (Head h : heads) {
-      int y = h.Y();
-      if (y > y1 && y < y2) { h.joinStem(s); }
-    }
-    // debug
-    if (s.heads.size() == 0) {
-      System.out.println("WTF empty head list after stemming");
-    } else {
-      s.setWrongSides();
-    }
-  }
+//  public void stemHeads(Staff staff, boolean up, int y1, int y2) {
+//    Stem s = new Stem(staff, up);
+//    for (Head h : heads) {
+//      int y = h.Y();
+//      if (y > y1 && y < y2) { h.joinStem(s); }
+//    }
+//    // debug
+//    if (s.heads.size() == 0) {
+//      System.out.println("WTF empty head list after stemming");
+//    } else {
+//      s.setWrongSides();
+//    }
+//  }
+
 
   // ------------------- Time.List --------------------
   public static class List extends ArrayList<Time> {

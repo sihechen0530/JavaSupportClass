@@ -63,10 +63,25 @@ public class Head extends Mass implements Comparable<Head> {
         int W = Head.this.W();
         boolean up = x > (t.x + W / 2);  // gesture to shape relation
         if (Head.this.stem == null) {
-          t.stemHeads(staff, up, y1, y2);
+//          t.stemHeads(staff, up, y1, y2);
+          Stem.getStem(staff, time, y1, y2, up);
         } else {
           t.unStemHeads(y1, y2);
         }
+      }
+    });
+
+    addReaction(new Reaction("DOT") {
+      @Override
+      public int bid(Gesture g) {
+        int xh = X(), yh = Y(), h = staff.fmt.H, w = W();
+        int x = g.vs.xM(), y = g.vs.yM();
+        if (x < xh || x > xh + 2 * w || y < yh - h || y > yh + h) { return UC.noBid; }
+        return Math.abs(xh + w - x) + Math.abs(yh - y);
+      }
+      @Override
+      public void act(Gesture g) {
+        if (Head.this.stem != null) { Head.this.stem.cycleDot(); }
       }
     });
   }
@@ -79,12 +94,12 @@ public class Head extends Mass implements Comparable<Head> {
 //      // first head
 //      g.setColor(Color.RED);
 //    }
-    g.setColor(Color.BLACK);
+    g.setColor(stem == null ? Color.RED : Color.BLACK);
     (forcedGlyph != null ? forcedGlyph : normalGlyph()).showAt(g, H, X(), Y());
     if (stem != null) {
-      int off = UC.augDotOffSet, sp = UC.augDotSpacing;
+      int off = UC.augDotOffset, sp = UC.augDotSpacing;
       for (int i = 0; i < stem.nDot; i++) {
-        g.fillOval(time.x + off + i * sp, Y(), 3 * H / 2, 3 * H / 2);
+        g.fillOval(time.x + off + i * sp, Y(), 2 * H / 3, 2 * H / 3);
       }
     }
   }
@@ -127,13 +142,13 @@ public class Head extends Mass implements Comparable<Head> {
     }
   }
 
-  public void joinStem(Stem s) {
-    if (stem != null) {
-      unStem();
-    }
-    s.heads.add(this);
-    stem = s;
-  }
+//  public void joinStem(Stem s) {
+//    if (stem != null) {
+//      unStem();
+//    }
+//    s.heads.add(this);
+//    stem = s;
+//  }
 
   @Override
   public int compareTo(Head h) {

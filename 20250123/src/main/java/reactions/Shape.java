@@ -11,9 +11,12 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import graphics.G;
 import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.TreeMap;
 import music.I;
 import music.UC;
+import reactions.Shape.Prototype.List;
 
 /**
  * with a name; list of prototypes
@@ -92,6 +95,7 @@ public class Shape implements Serializable {
     }
 
     public static void save() {
+      trimUnusedNames();
       try {
         ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(fileName));
         oos.writeObject(DB);
@@ -100,6 +104,20 @@ public class Shape implements Serializable {
       } catch (Exception e) {
         System.out.println("Failed to save");
         System.out.println(e);
+      }
+    }
+
+    public static void trimUnusedNames() {
+      // delete unused data gesture
+      Set<String> keys = DB.keySet();
+      Set<String> invalidKeys = new HashSet<>();
+      for (String key : keys) {
+        if (DB.get(key).prototypes.isEmpty()) {
+          invalidKeys.add(key);
+        }
+      }
+      for (String key : invalidKeys) {
+        DB.remove(key);
       }
     }
 
@@ -139,7 +157,7 @@ public class Shape implements Serializable {
         }
         return bestSoFar;
       }
-      private static int m = 10, w = 60;
+      private static int m = 10, w = 60, showBoxHeight = m + w;
       private static G.VS showBox = new G.VS(m, m, w, w);
       public void show(Graphics g) {
         g.setColor(Color.ORANGE);
@@ -186,6 +204,21 @@ public class Shape implements Serializable {
       }
     }
 
+    private boolean removePrototype(int x, int y) {
+      int H = List.showBoxHeight;
+      if (y < H) {
+        int index = x / H;
+        Prototype.List pList = TRAINER.pList;
+        if (pList != null && index < pList.size()) {
+          pList.remove(index);
+        }
+        Ink.BUFFER.clear();
+        // tell up() we are in showbox area
+        return true;
+      }
+      return false;
+    }
+
     public void show(Graphics g) {
       G.clearScreen(g);
       g.setColor(Color.BLACK);
@@ -211,6 +244,9 @@ public class Shape implements Serializable {
     }
 
     public void up(int x, int y) {
+      if (removePrototype(x, y)) {
+        return;
+      }
       Ink.BUFFER.up(x, y);
       Ink ink = new Ink();
       Shape.DB.train(curName, ink.norm);
